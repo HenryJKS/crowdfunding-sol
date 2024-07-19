@@ -5,9 +5,9 @@ pragma solidity ^0.8.9;
 contract CampaignFactory {
     address payable[] public deployedCampaigns;
 
-        // Criando a instancia do Contrato Campaign onde precisamos passar de argumento os parametros do construtor
-    /*  Mudamos o construtor da Campaign pois queremos que quem criar uma instância seja o dono de uma Campaign
-        então precisamos passar para o argumento o msg.sender que definirá a carteira usuario como manager */
+    // Creating an instance of the Campaign contract where we need to pass the constructor arguments
+    /* We changed the Campaign constructor because we want whoever creates an instance to be the owner of a Campaign
+       so we need to pass msg.sender as an argument, which will set the user's wallet as the manager */
     function createCampaign(uint minimum) public {
         address newCampaign = address(new Campaign(minimum, msg.sender));
         deployedCampaigns.push(payable(newCampaign));
@@ -19,26 +19,26 @@ contract CampaignFactory {
 }
 
 contract Campaign {
-    /* Criar uma estrutura para Request, onde vai ser uma classe com atributos, e vamos usar essa classe para que 
-    o manager consiga enviar um certo dinheiro para o fornecedor*/
+    /* Create a struct for Request, where it will be a class with attributes, and we will use this class so that
+    the manager can send a certain amount of money to the supplier */
     struct Request {
-        string description; // descrição do motivo da transferência
-        uint value; // valor que será transferido para fornecedor
-        address recipient; // endereço do fornecedor
-        bool complete; // status do request, se true ja foi feita a transferência
-        uint approvalCount; // contagem de endereços aprovados
-        mapping(address => bool) approvals; // mapping para endereços que querem aprovar
+        string description; // description of the reason for the transfer
+        uint value; // amount to be transferred to the supplier
+        address recipient; // supplier's address
+        bool complete; // request status, if true the transfer has already been made
+        uint approvalCount; // count of approved addresses
+        mapping(address => bool) approvals; // mapping for addresses that want to approve
     }
 
-    // Criando um array de Request
+    // Creating an array of Request
     Request[] public requests;
     address public manager;
     uint public minimumContribution;
 
-    // Criando um mapping para endereços que querem aprovar
+    // Creating a mapping for addresses that want to approve
     mapping(address => bool) public approvers;
 
-    // Contador de endereços que aprovaram
+    // Counter of addresses that have approved
     uint public approversCount;
 
     modifier restricted() {
@@ -46,7 +46,7 @@ contract Campaign {
         _;
     }
 
-    // construtor definindo o valor mínimo de contribuição e o endereço do manager
+    // Constructor defining the minimum contribution value and the manager's address
     constructor (uint minimum, address creator) {
         manager = creator;
         minimumContribution = minimum;
@@ -62,15 +62,15 @@ contract Campaign {
     function createRequest(string memory description, uint value, address recipient) public restricted {
         Request storage newRequest = requests.push(); 
         newRequest.description = description;
-        newRequest.value= value;
-        newRequest.recipient= recipient;
-        newRequest.complete= false;
-        newRequest.approvalCount= 0;
+        newRequest.value = value;
+        newRequest.recipient = recipient;
+        newRequest.complete = false;
+        newRequest.approvalCount = 0;
     }
 
     function approveRequest(uint index) public {
         Request storage request = requests[index];
-        // onde somente os endereços que contribuiram podem aprovar um request
+        // Only addresses that contributed can approve a request
         require(approvers[msg.sender]);
         require(!request.approvals[msg.sender]);
 
