@@ -1,6 +1,6 @@
 # Crowdfunding em Solidity
 
-Este projeto é um contrato inteligente de crowdfunding desenvolvido em Solidity. Ele permite que os usuários invistam em projetos promissores e ajuda os criadores de projetos a levantar fundos de uma maneira descentralizada e transparente.
+Crowdfunding desenvolvido em Solidity. Ele permite que os usuários invistam em projetos promissores e ajuda os criadores de projetos a levantar fundos de uma maneira descentralizada e transparente.
 
 ## Recursos
 
